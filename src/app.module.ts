@@ -11,12 +11,17 @@ import {StudentModule} from "./students/student.module"
 import {GlobalModule} from "./global/g.module"
 import {ConfigModule} from "./config/config.module"
 import {LoggerMiddle} from "./middleware/LoggerMiddleware"
+import {PPExceptionFilter} from "./exception"
 import {logger} from "./middleware/logger"
 
 @Module({
   imports: [GlobalModule, CatsModule, StudentModule, ConfigModule.register({folder: "xxx"})],
    controllers: [AppController, DogController],
-  providers: [AppService, HTTP_OPTIONS, DogService],
+  providers: [AppService, HTTP_OPTIONS, DogService, {
+    provide : "INJECT_EXCEPTION",
+    useClass: PPExceptionFilter,
+    useValue :"test"
+  }],
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {

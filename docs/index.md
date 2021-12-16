@@ -57,3 +57,82 @@ export  class DogController {
 
 }
 `
+
+### 2.3， 在provider中自定义方式注入的exception filter如何使用呢
+https://docs.nestjs.cn/8/exceptionfilters?id=%e5%9f%ba%e7%a1%80%e5%bc%82%e5%b8%b8%e7%b1%bb
+
+
+`
+import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
+
+@Module({
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
+})
+export class AppModule {}
+`
+2021.12.16还没有整明白，先跳过吧。。。。
+
+### 2.4，基于基类BaseExceptionFilter 来创建个性化的异常捕获的时候，实例化该类，需要传一个adapter，为啥捏
+`
+/**
+ * 基于核心基类来创建过滤器
+ * 这个要注意，实例化类的时候，需要传入一个adapter参数，否则会报错。
+ *   const { httpAdapter } = app.get(HttpAdapterHost); // 这个httpAdapter是干啥用的捏？？？
+ *   app.useGlobalFilters(new AnyExceptionFilter2(httpAdapter)) // 应用全局的异常驳货的时候，需要传异常捕获的实例
+ */
+import { Catch, ArgumentsHost } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
+
+@Catch()
+export class AnyExceptionFilter2 extends BaseExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    super.catch(exception, host);
+    console.log(`AnyExceptionFilter2.catch :: got exception....`)
+  }
+}
+`
+使用的时候需要这样使用：
+`
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { AppModule } from './app.module';
+import {logger} from "./middleware/logger"
+import {PPExceptionFilter, AnyExceptionFilter, AnyExceptionFilter2} from "./exception"
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AnyExceptionFilter2(httpAdapter)) // 应用全局的异常驳货的时候，需要传异常捕获的实例
+  app.use(logger) // 设置全局的中间件
+  await app.listen(3000);
+}
+bootstrap();
+
+`
+
+当然，咱们也可以直接实现异常捕获接口，实现一个完全自定义的异常捕获
+
+`
+import {ExceptionFilter, Catch, ArgumentsHost} from "@nestjs/common";
+import {Request, Response} from "express"
+
+@Catch()
+export class AnyExceptionFilter implements ExceptionFilter {
+    catch(exception: any, host: ArgumentsHost) {
+        const ctx = host.switchToHttp()
+        const req:Request = ctx.getRequest<Request>()
+        const res:Response = ctx.getResponse<Response>()
+        res.json({
+            status: 5000,
+            data: {
+                url: req.url
+            },
+            message: "This is AnyFilter"
+        })
+    }
+}
+`

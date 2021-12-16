@@ -1,16 +1,20 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res, HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res, HttpException, HttpStatus, Catch, UseFilters, Injectable, Inject} from '@nestjs/common';
 import {Response} from "express"
 import { CreateCatDto, /* UpdateCatDto, ListAllEntities */} from './dto/CatsDto';
 import {Cat} from "./interfaces/cat.interface"
 import {CatsService} from "./cats.service"
 import {StudentService} from "../students/student.service"
 import {GlobalService} from "../global/g.service"
+import {IException, NormalException, SimpleException, PPExceptionFilter} from "../exception"
+
+// @UseFilters(PPExceptionFilter)
 @Controller('cats')
 export class CatsController {
     constructor(
       private readonly catsService: CatsService, 
       private readonly studentService:StudentService,
       private readonly gService: GlobalService,
+      // @Inject("INJECT_EXCEPTION") private readonly exFilter: PPExceptionFilter,
       ) {
 
     }
@@ -19,6 +23,12 @@ export class CatsController {
       const rst = await this.catsService.create(createCatDto, res)
     return rst;
   }
+  @Post("createError")
+  async createErr(@Body() createCatDto: Cat, @Res() res: Response) {
+      throw new SimpleException("测试性错误", HttpStatus.SERVICE_UNAVAILABLE)
+      
+  }
+
 
   @Get("getOther")
   async getOther(){
@@ -41,19 +51,15 @@ export class CatsController {
   //     return rst
     
   // }
-
-  @Get('mid')
+  
+  @Get('mid')  
   findOne1(@Param('id') id: string) {
     // throw new HttpException("Fobbiden", HttpStatus.FORBIDDEN)
-    throw new HttpException({
-      status:7777,
-      data :{
-        err : "ttt"
-      },
-      error: "It is error",
-      desc : "Hello"
-      
-    }, HttpStatus.FORBIDDEN)
+    throw new SimpleException("不让进", HttpStatus.FORBIDDEN)
+    throw new NormalException(
+      {status:HttpStatus.FORBIDDEN, message:"fff", data:{info:"xxxx"}},
+      HttpStatus.FORBIDDEN
+      )
     // return `This action returns a #${id} cat`;
 
   }
