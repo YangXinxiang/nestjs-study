@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res, HttpException, HttpStatus} from '@nestjs/common';
 import {Response} from "express"
 import { CreateCatDto, /* UpdateCatDto, ListAllEntities */} from './dto/CatsDto';
 import {Cat} from "./interfaces/cat.interface"
@@ -34,17 +34,28 @@ export class CatsController {
 //     return `This action returns all cats (limit: ${query.limit} items)`;
 //   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Param('addr') addr: string):Cat {
-      const rst:Cat = this.catsService.getByIndex(parseInt(id)) 
-      console.log(rst)
-      return rst
+  // @Get(':id')
+  // findOne(@Param('id') id: string, @Param('addr') addr: string):Cat {
+  //     const rst:Cat = this.catsService.getByIndex(parseInt(id)) 
+  //     console.log(rst)
+  //     return rst
     
-  }
+  // }
 
   @Get('mid')
   findOne1(@Param('id') id: string) {
-    return `This action returns a #${id} cat`;
+    // throw new HttpException("Fobbiden", HttpStatus.FORBIDDEN)
+    throw new HttpException({
+      status:7777,
+      data :{
+        err : "ttt"
+      },
+      error: "It is error",
+      desc : "Hello"
+      
+    }, HttpStatus.FORBIDDEN)
+    // return `This action returns a #${id} cat`;
+
   }
 //   @Put(':id')
 //   update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
