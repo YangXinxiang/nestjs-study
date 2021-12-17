@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Res, Query,Ip,Headers,Body,Req, HttpCode, Header, Param, HostParam} from '@nestjs/common';
+import { Controller, Get, Post, Res, Query,Ip,Headers,Body,Req, HttpCode, Header, Param, HostParam, Inject, UseFilters, Catch} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request,Response } from 'express';
 import {User, UserEntry,MyDecorate} from "./decorators/user.decorator"
 import {CatsDto} from "./cats/dto/CatsDto"
 @Controller({host:":avc"})
 export class AppController {
+  @Inject("INJECT_EXCEPTION")
+  private readonly cci:string;
   constructor(private readonly appService: AppService) {}
 
   @Get()
@@ -19,7 +21,8 @@ export class AppController {
   @Get("yxx")
   getYxx(@Req() request: Request):string {
     console.log(request.ip, request.query)
-    return "Hello, yxx"
+    console.log(this.cci)
+    return "Hello, yxx" + JSON.stringify(this.cci)
   }
 
   @Get("yxx66")
