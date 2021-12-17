@@ -7,7 +7,7 @@ import {StudentService} from "../students/student.service"
 import {GlobalService} from "../global/g.service"
 import {IException, NormalException, SimpleException, PPExceptionFilter} from "../exception"
 import {JoiValidatePiple} from "../pipe/JoiValidatePiple"
-import Joi, {ObjectSchema, Schema } from "joi"
+// import Joi, {ObjectSchema, Schema } from "joi"
 import {createCatSchema} from "./schema/createCatSchema"
 // @UseFilters(PPExceptionFilter)
 @Controller('cats')
