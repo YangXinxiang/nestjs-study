@@ -136,3 +136,18 @@ export class AnyExceptionFilter implements ExceptionFilter {
     }
 }
 `
+
+
+### 2.5，使用 Joi问题
+ import Joi, {Schema}  from "joi" 提示错误，没有导入到Joi。。。 why？？ 先不纠结
+`
+
+// import Joi, {Schema}  from "joi"
+const Joi = require('@hapi/joi'); // 为嘛用import不行呢。。。。先不纠结，搞这种极度不推荐的混合模式吧
+export const createCatSchema = Joi.object({
+    name: Joi.string().required(),
+    age: Joi.number().required,
+    desc: Joi.string()
+})
+Joi.object()
+`
