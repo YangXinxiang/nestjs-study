@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res, HttpException, HttpStatus, Catch, UseFilters, Injectable, Inject, UsePipes} from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Put, Param, Delete, Res, HttpException, HttpStatus, Catch, UseFilters, Injectable, Inject, UsePipes, UseGuards} from '@nestjs/common';
 import {Response} from "express"
 import { CreateCatDto, /* UpdateCatDto, ListAllEntities */} from './dto/CatsDto';
 import {Cat} from "./interfaces/cat.interface"
@@ -7,11 +7,13 @@ import {StudentService} from "../students/student.service"
 import {GlobalService} from "../global/g.service"
 import {IException, NormalException, SimpleException, PPExceptionFilter} from "../exception"
 import {JoiValidatePiple} from "../pipe/JoiValidatePiple"
+import {IPs} from "../decorators/ips.decorator"
+import {IPGuard} from "../guard/IPGuard"
 // import Joi, {ObjectSchema, Schema } from "joi"
 import {createCatSchema} from "./schema/createCatSchema"
 // @UseFilters(PPExceptionFilter)
 @Controller('cats')
-
+@UseGuards(IPGuard)
 export class CatsController {
     constructor(
       private readonly catsService: CatsService, 
@@ -22,6 +24,8 @@ export class CatsController {
 
     }
   @Post("create")
+  @IPs("192.168.0.0")
+
   async create(@Body() createCatDto: Cat, @Res() res: Response) {
       const rst = await this.catsService.create(createCatDto, res)
     return rst;

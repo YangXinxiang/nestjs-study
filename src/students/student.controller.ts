@@ -5,7 +5,7 @@ import {Controller,Post,Get, Body, Res, Param, UseGuards, SetMetadata} from "@ne
 import {Response} from "express"
 import {StudentService} from "./student.service";
 import {Student} from "./dto/student.dto"
-import {RoleGuard} from "../guard/RoleGuard"
+import {RoleGuard} from "../guard/RoleGuard"
 import {Roles} from "../decorators/roles.decorator"
 @Controller("studennt")
 @UseGuards(RoleGuard)
