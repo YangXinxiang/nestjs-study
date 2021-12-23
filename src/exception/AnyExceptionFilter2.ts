@@ -13,5 +13,6 @@ export class AnyExceptionFilter2 extends BaseExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     super.catch(exception, host);
     console.log(`AnyExceptionFilter2.catch :: got exception....`)
+    console.log(exception)
   }
 }

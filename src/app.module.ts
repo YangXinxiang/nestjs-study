@@ -14,8 +14,9 @@ import {LoggerMiddle} from "./middleware/LoggerMiddleware"
 import {PPExceptionFilter} from "./exception"
 import {logger} from "./middleware/logger"
 import {CustomerModule} from "./customer/CustomerModule"
+import {CCOMTeacherModule} from "./ccom-fz-teacher/ccomTeacher.moduler"
 @Module({
-  imports: [GlobalModule, CatsModule, StudentModule, CustomerModule, ConfigModule.register({folder: "xxx"})],
+  imports: [GlobalModule, CatsModule, StudentModule, CustomerModule, ConfigModule.register({folder: "xxx"}), CCOMTeacherModule],
    controllers: [AppController, DogController],
   providers: [AppService, HTTP_OPTIONS, DogService, {
     provide : "INJECT_EXCEPTION",
