@@ -1,27 +1,20 @@
-import {CallHandler, ExecutionContext, Injectable, NestInterceptor,RequestMethod} from "@nestjs/common"
-
-import { Observable, tap } from "rxjs"
-import {Response, Request} from "express"
+import {CallHandler, ExecutionContext, Injectable, NestInterceptor} from "@nestjs/common"
+import { Observable, tap, of } from "rxjs"
 @Injectable()
 export class RequestIntercepor implements NestInterceptor {
+    // 不能将对OPTIONS类型的请求放到拦截器处理，因为到这一层的时候，已经会去检查路由处理程序是否有该路由的处理方法了，也就是必须要有@OPTIONS("update")了。
+    // 而OPTIONS类型的请求，是不应该加到具体路由的业务代码中响应的，应该放到nginx代理层，或者nestjs服务的中间件层。
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-        const httpHost = context.switchToHttp()
-        const req:Request = httpHost.getRequest()
-        const res:Response = httpHost.getResponse()
-        console.log(`RequestIntercepor.intercept :: enter, method = ${req.method}, url = ${req.url}`)
-        // 在拦截中设置请求头，允许跨域
-        res.setHeader("access-control-allow-credentials", "true")
-        res.setHeader("access-control-allow-methods", "GET, POST, OPTIONS, PUT, DELETE");
-        // 允许跨域，最关键的事下面这个请求头哈，否则不能跨域
-        res.setHeader("access-control-allow-headers", "locale,Origin, X-Requested-With, Content-Type, Accept, Cache-Control, Authorization, WE-APP-ID,WE-TRACE-ID,WE-TOKEN,WE-CHANNEL")        
-        res.setHeader("access-control-allow-origin", "*");
-        if(req.method === "OPTIONS") {
-            // options类型的请求，一般都不返回body，因此用状态码204
-            res.status(204).send("")
-        } else {
-            return next.handle().pipe(
-                tap(()=>{
-                    console.log(`RequestIntercepor.intercept :: response end,req.method = ${req.method}`)
+        // 模拟拦截器进行缓存处理。
+        const isCached: boolean = false;
+        if(isCached) {
+            return of({
+                "status": 200
+            })
+        } else{
+            return next.handle().pipe(            
+                tap((data)=>{
+                    console.log(`RequestIntercepor.intercept :: response end,, data = `, data)
                 })
             )
         }

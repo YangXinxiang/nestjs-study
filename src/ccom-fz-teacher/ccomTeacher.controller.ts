@@ -19,14 +19,15 @@ export class CCOMTeacherController {
             data,
         };
     }
-    @Options("update")
-    handleOptions(@Res() res:Response) {
-        console.log(`handleOptions :: enter`) 
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081")
-        res.send("ok~~~~~~")
-        console.log(`handleOptions :: end`) 
-        // return "OK"
-    }
+    // Options方法类型的请求，不应该走到业务层处理，业务层不应该有这样的代码。
+    // @Options("update")
+    // handleOptions(@Res() res:Response) {
+    //     console.log(`handleOptions :: enter`) 
+    //     res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081")
+    //     res.send("ok~~~~~~")
+    //     console.log(`handleOptions :: end`) 
+    //     // return "OK"
+    // }
     @Post("update")
     async updateTeacher(@Body() teacher:any){
         console.log(`update :: enter, teacher = `, teacher) 
