@@ -2,6 +2,8 @@ import {Controller, Get, Post,Body, BadRequestException,Options, Res} from "@nes
 import {Response} from "express"
 import {CCOMTeacherService} from "./ccomTeacher.service"
 import {ITeacher} from "./interface/ITeacher"
+import {TeacherEntry} from "../decorators"
+import {AllAuth} from "../decorators/all.auth.decorator"
 const path = require("path")
 const fzTeacherFileName = "hqgq-teacherList-FZ-RJ.json"
 const fzTeacherFullPath = path.resolve(__dirname, `./data/${fzTeacherFileName}`).replace("dist", "src");
@@ -29,8 +31,8 @@ export class CCOMTeacherController {
     //     // return "OK"
     // }
     @Post("update")
-    async updateTeacher(@Body() teacher:any){
-        console.log(`update :: enter, teacher = `, teacher) 
+    async updateTeacher(@Body() teacher:any, @TeacherEntry("id") tid:string){
+        console.log(`update :: enter, tid = ${tid}, teacher = `, teacher) 
         if(teacher && teacher.id && teacher.name) {
             const data = await this.getList()
             let updatedTeacher:ITeacher;
@@ -54,5 +56,11 @@ export class CCOMTeacherController {
             }
         } 
         throw new BadRequestException("参数错误")
+    }
+
+    @Post("findOne")
+    @AllAuth("admin", "sadmin", "sa")
+    async findOne(@Body() b) {
+        console.log(`CCOMTeacherController.findOne :: enter, `,b)
     }
 }

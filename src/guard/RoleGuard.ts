@@ -22,7 +22,7 @@
          const role:string = request.headers.role +"";
          const match:boolean = this.matchRoles(roles, role)
          console.log(`RoleGuard.canActivate ::  request.url = ${request.url}, role = ${role}, match = ${match}`);
-         throw new UnauthorizedException();
+        // throw new UnauthorizedException();
          return match;
          console.log(context.getClass())
          console.log(context.getHandler())
