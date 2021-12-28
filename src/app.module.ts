@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {TypeOrmModule} from "@nestjs/typeorm"
 import { AppController } from './app.controller';
 import {DogController} from "./dog.controller"
 
@@ -15,8 +16,28 @@ import {PPExceptionFilter} from "./exception"
 import {logger} from "./middleware/logger"
 import {CustomerModule} from "./customer/CustomerModule"
 import {CCOMTeacherModule} from "./ccom-fz-teacher/ccomTeacher.moduler"
+import {User} from "./users/user.entity"
+import {UsersModule} from "./users/user.module"
 @Module({
-  imports: [GlobalModule, CatsModule, StudentModule, CustomerModule, ConfigModule.register({folder: "xxx"}), CCOMTeacherModule],
+  imports: [
+    GlobalModule, 
+    CatsModule, 
+    StudentModule, 
+    CustomerModule, 
+    ConfigModule.register({folder: "xxx"}), 
+    CCOMTeacherModule,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'q11111111',
+      database: 'nestjs-study',
+      entities: [User],
+      synchronize: true,
+    }),
+    UsersModule,
+  ],
    controllers: [AppController, DogController],
   providers: [AppService, HTTP_OPTIONS, DogService, {
     provide : "INJECT_EXCEPTION",
